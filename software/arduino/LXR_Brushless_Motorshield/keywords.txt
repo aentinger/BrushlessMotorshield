@@ -1,0 +1,22 @@
+#######################################
+# Syntax Coloring Map for Stackable_Motorshield
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+LXR_Brushless_Motorshield	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+set_speed	KEYWORD2
+get_speed	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+

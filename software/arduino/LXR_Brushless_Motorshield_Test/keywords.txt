@@ -1,0 +1,21 @@
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+LXR_Brushless_Motorshield_Test	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+set_state_U	KEYWORD2
+set_state_V	KEYWORD2
+set_state_W	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+O_LOW	LITERAL1
+O_HIGH	LITERAL1
+O_HIGH_IMPEDANCE	LITERAL1
