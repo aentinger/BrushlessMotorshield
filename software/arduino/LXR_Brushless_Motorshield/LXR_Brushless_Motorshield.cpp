@@ -61,6 +61,7 @@
 static volatile int8_t m_state = 0;
 static volatile uint8_t m_speed = 0;
 static volatile bool m_startup_complete = false;
+static volatile E_DIRECTION m_dir = FORWARD;
 
 /* PROTOTYPE SECTION */
 void C_set_pins_according_to_state();
@@ -144,61 +145,115 @@ void C_set_speed(uint8_t const speed) {
 void C_set_pins_according_to_state() {
   switch(m_state) {
   case 0: 
-    { // U = PWM, V = Float, W = GND
-      INH_U_PORT |= INH_U;	
-      IN_U_PORT |= IN_U;
-      INH_V_PORT &= ~INH_V;	
-      MUX_BEMF_V_TO_AIN1;
+    { 
+      if(m_dir == FORWARD) {
+        // U = PWM, V = Float, W = GND
+        INH_U_PORT |= INH_U;	
+        IN_U_PORT |= IN_U;
+        INH_V_PORT &= ~INH_V;	
+        MUX_BEMF_V_TO_AIN1;
+      } else {
+        // U = Float, V = PWM, W = GND
+        INH_U_PORT &= ~INH_U;	
+        MUX_BEMF_U_TO_AIN1;
+        INH_V_PORT |= INH_V;	
+        IN_V_PORT |= IN_V;
+      }
       INH_W_PORT |= INH_W;	
       IN_W_PORT &= ~IN_W;
     } 
     break;
   case 1: 
-    { // U = Float, V = PWM, W = GND
-      INH_U_PORT &= ~INH_U;	
-      MUX_BEMF_U_TO_AIN1;
-      INH_V_PORT |= INH_V;	
-      IN_V_PORT |= IN_V;
+    { 
+      if(m_dir == FORWARD) {
+        // U = Float, V = PWM, W = GND
+        INH_U_PORT &= ~INH_U;	
+        MUX_BEMF_U_TO_AIN1;
+        INH_V_PORT |= INH_V;	
+        IN_V_PORT |= IN_V;
+      } else {
+         // U = PWM, V = Float, W = GND
+        INH_U_PORT |= INH_U;	
+        IN_U_PORT |= IN_U;
+        INH_V_PORT &= ~INH_V;	
+        MUX_BEMF_V_TO_AIN1;
+      }
       INH_W_PORT |= INH_W;	
       IN_W_PORT &= ~IN_W;
     } 
     break;
   case 2: 
-    { // U = GND, V = PWM, W = Float
-      INH_U_PORT |= INH_U;	
-      IN_U_PORT &= ~IN_U;
-      INH_V_PORT |= INH_V;	
-      IN_V_PORT |= IN_V;
+    { 
+      if(m_dir == FORWARD) {
+        // U = GND, V = PWM, W = Float
+        INH_U_PORT |= INH_U;	
+        IN_U_PORT &= ~IN_U;
+        INH_V_PORT |= INH_V;	
+        IN_V_PORT |= IN_V;
+      } else {
+        // U = PWM, V = GND, W = Float
+        INH_U_PORT |= INH_U;	
+        IN_U_PORT |= IN_U;
+        INH_V_PORT |= INH_V;	
+        IN_V_PORT &= ~IN_V;
+      }
       INH_W_PORT &= ~INH_W;	
       MUX_BEMF_W_TO_AIN1;
     } 
     break;
   case 3: 
-    { // U = GND, V = Float , W =  PWM
-      INH_U_PORT |= INH_U;	
-      IN_U_PORT &= ~IN_U;
-      INH_V_PORT &= ~INH_V;	
-      MUX_BEMF_V_TO_AIN1;
+    { 
+      if(m_dir == FORWARD) {
+        // U = GND, V = Float , W =  PWM
+        INH_U_PORT |= INH_U;	
+        IN_U_PORT &= ~IN_U;
+        INH_V_PORT &= ~INH_V;	
+        MUX_BEMF_V_TO_AIN1;
+      } else {
+        // U = Float, V = GND , W =  PWM
+        INH_U_PORT &= ~INH_U;	
+        MUX_BEMF_U_TO_AIN1;
+        INH_V_PORT |= INH_V;	
+        IN_V_PORT &= ~IN_V;
+      }
       INH_W_PORT |= INH_W;	
       IN_W_PORT |= IN_W;
     } 
     break;
   case 4: 
-    { // U = Float, V = GND, W = PWM
-      INH_U_PORT &= ~INH_U;	
-      MUX_BEMF_U_TO_AIN1;
-      INH_V_PORT |= INH_V;	
-      IN_V_PORT &= ~IN_V;
+    { 
+      if(m_dir == FORWARD) {
+        // U = Float, V = GND, W = PWM
+        INH_U_PORT &= ~INH_U;	
+        MUX_BEMF_U_TO_AIN1;
+        INH_V_PORT |= INH_V;	
+        IN_V_PORT &= ~IN_V;
+      } else {
+        // U = GND, V = Float, W = PWM
+        INH_U_PORT |= INH_U;	
+        IN_U_PORT &= ~IN_U;
+        INH_V_PORT &= ~INH_V;	
+        MUX_BEMF_V_TO_AIN1;
+      }
       INH_W_PORT |= INH_W;	
       IN_W_PORT |= IN_W;
     } 
     break;
   case 5: 
-    { // U = PWM, V = GND, W = Float
-      INH_U_PORT |= INH_U;	
-      IN_U_PORT |= IN_U;
-      INH_V_PORT |= INH_V;	
-      IN_V_PORT &= ~IN_V;
+    { 
+      if(m_dir == FORWARD) {
+        // U = PWM, V = GND, W = Float
+        INH_U_PORT |= INH_U;	
+        IN_U_PORT |= IN_U;
+        INH_V_PORT |= INH_V;	
+        IN_V_PORT &= ~IN_V;
+      } else {
+        // U = GND, V = PWM, W = Float
+        INH_U_PORT |= INH_U;	
+        IN_U_PORT &= ~IN_U;
+        INH_V_PORT |= INH_V;	
+        IN_V_PORT |= IN_V;
+      }
       INH_W_PORT &= ~INH_W;	
       MUX_BEMF_W_TO_AIN1;
     } 
@@ -349,6 +404,16 @@ uint8_t LXR_Brushless_Motorshield::get_speed() {
   return m_speed; 
 }
 
-
-
-
+/**
+ * @brief sets the direction of the brushless motor
+ */
+void LXR_Brushless_Motorshield::set_direction(E_DIRECTION const dir) {
+  m_dir = dir;
+}
+  
+/**
+ * @brief sets the direction of the brushless motor
+ */
+E_DIRECTION LXR_Brushless_Motorshield::get_direction() {
+  return m_dir;
+}
