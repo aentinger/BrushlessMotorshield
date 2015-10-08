@@ -16,7 +16,7 @@
 #include <stdbool.h>
 
 // enabling this defines puts the signal of the comparator isr on the digital pin D9 (PB1) ... useful for triggering the oszillocop
-//#define BRUSHLESS_DEBUG_OSZI
+#define BRUSHLESS_DEBUG_OSZI
 
 /* HARDWARE ABSTRACTION LAYER */
 #ifdef BRUSHLESS_DEBUG_OSZI
@@ -109,8 +109,6 @@ void C_init_brushless_motor_control() {
   ACSR &= ~(1<<ACD);
   // trigger interrupt on falling edge of comparator
   ACSR |= (1<<ACIS1);
-  // enable analog comparator interrupt
-  ACSR |= (1<<ACIE);
 
   // init timer 2 (for pwm generation) - output is activated on timer overflow, deactivated at compare match
   // clear TCCR2A
@@ -125,7 +123,12 @@ void C_init_brushless_motor_control() {
   TCCR2B = (1<<CS20);
 
   // init watchdog as timeout timer
-  WDTCSR = (1<<WDCE) | (1<<WDIE) | (1<<WDP2) | (1<<WDP1);
+  cli();
+  wdt_reset();
+  wdt_enable(WDTO_1S);
+  WDTCSR |= (1<<WDCE) | (1<<WDIE) | (1<<WDP2) | (1<<WDP1); 
+  sei();
+
 }
 
 /** 
@@ -135,8 +138,23 @@ void C_init_brushless_motor_control() {
 void C_set_speed(uint8_t const speed) {
   m_speed = speed;
   OCR2A = m_speed;
-  if(m_speed == 0) TCCR2B &= ~(1<<CS20);
-  else TCCR2B |= (1<<CS20); 
+  if(m_speed == 0) {
+	TCCR2B &= ~(1<<CS20);
+	ACSR &= ~(1<<ACIE);
+        m_startup_complete = false;
+        // set all IN_x ports to 0
+        IN_U_PORT &= ~IN_U;
+        IN_V_PORT &= ~IN_V;
+        IN_W_PORT &= ~IN_W;
+        // set all INH_X ports to 0
+        INH_U_PORT &= ~INH_U;
+        INH_V_PORT &= ~INH_V;
+        INH_W_PORT &= ~INH_W;
+
+	}
+  else {
+	 TCCR2B |= (1<<CS20);
+	}	 
 }
 
 /** 
@@ -334,6 +352,9 @@ ISR(TIMER2_OVF_vect) {
  * @brief interrupt service routine for timer 2 compare match a interrupt
  */
 ISR(TIMER2_COMPA_vect) {
+#ifdef BRUSHLESS_DEBUG_OSZI
+  //AC_INT_PORT |= AC_INT;
+#endif
   // deactivate current pwm pin
   switch(m_state) {
   case 0: 
@@ -364,11 +385,13 @@ ISR(TIMER2_COMPA_vect) {
  */
 ISR(WDT_vect) {
   wdt_reset();
-  WDTCSR |= (1<<WDCE) | (1<<WDIE); // reenable interrupt to prevent system reset
+  WDTCSR |= (1<<WDCE) | (1<<WDIE) | (1<<WDP2) | (1<<WDP1); // reenable interrupt to prevent system reset
   if(m_speed > 0) { 
     sei();
     m_startup_complete = false;
     while(!m_startup_complete) {
+      // enable analog comparator interrupt
+         ACSR |= (1<<ACIE);
       // switch to the next state
       m_state++; 
       if(m_state == 6) m_state = 0;
@@ -416,4 +439,11 @@ void LXR_Brushless_Motorshield::set_direction(E_DIRECTION const dir) {
  */
 E_DIRECTION LXR_Brushless_Motorshield::get_direction() {
   return m_dir;
+}
+
+/**
+ * @brief returns the current state of the software (sartup mode, controlled mode)
+ */
+bool LXR_Brushless_Motorshield::is_startup_complete() {
+  return m_startup_complete;
 }

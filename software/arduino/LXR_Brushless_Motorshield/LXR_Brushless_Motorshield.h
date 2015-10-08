@@ -38,7 +38,13 @@ public:
   /**
    * @brief sets the direction of the brushless motor
    */
-  E_DIRECTION get_direction();
+  static E_DIRECTION get_direction();
+
+ /**
+ * @brief returns the current state of the software (sartup mode, controlled mode)
+ */
+
+  static bool is_startup_complete(); 
 };
 
 #endif
