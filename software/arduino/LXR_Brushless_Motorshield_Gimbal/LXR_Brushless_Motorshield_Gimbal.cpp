@@ -51,16 +51,20 @@
 
 /* TYPEDEFS */
 typedef enum {U = 0, V = 1, W = 2} E_PHASE_SELECT;
-typedef struct {
+typedef struct 
+{
 	uint8_t ocr2a;
 	E_PHASE_SELECT phase;
 } s_phase_data;
-typedef struct {
+
+typedef struct 
+{
 	s_phase_data phase_data[3];
 	uint8_t phase_cnt;
 } s_pwm_data;
 
 /* GLOBAL VARIABLES */
+
 static volatile E_DIRECTION m_direction = FORWARD;
 static volatile uint8_t m_current_step_U = 0;
 static volatile uint8_t m_current_step_V = 14;
@@ -68,21 +72,23 @@ static volatile uint8_t m_current_step_W = 28;
 static volatile s_pwm_data m_pwm_data;
 
 /* GLOBAL CONSTANTS */
+
 static const uint8_t NUMBER_OF_STEPS = 42;
 static const uint8_t SINUS[NUMBER_OF_STEPS] = {128,147,166,184,200,215,228,239,247,253,255,255,253,247,239,228,215,200,184,166,147,128,109,90,72,56,41,28,17,9,3,0,0,3,9,17,28,41,56,72,90,109};	
 
 /* PROTOTYPES */
+
 uint8_t increase_step(uint8_t const step);
 void sort(s_phase_data *data, uint8_t const length);
 void swap(s_phase_data *a, s_phase_data *b);
-
 
 /* FUNCTIONS */
 
 /** 
  * @brief initializes this library
  */	
-void LXR_Brushless_Motorshield_Gimbal::begin() {
+void LXR_Brushless_Motorshield_Gimbal::begin() 
+{
 	  // set all IN_x ports to 0
 	  IN_U_PORT &= ~IN_U;
 	  IN_V_PORT &= ~IN_V;
@@ -104,6 +110,7 @@ void LXR_Brushless_Motorshield_Gimbal::begin() {
 	  LXR_Brushless_Motorshield_Gimbal::step();
 	 
 	  // set up timer 2
+	  TCCR2A = 0;
 	  // reset timer
 	  TCNT2 = 0;
 	  // enable interrupts compare match A, timer overflow
@@ -125,7 +132,8 @@ void LXR_Brushless_Motorshield_Gimbal::begin() {
 /**
  * @brief performs one step in the desired direction
  */
-void LXR_Brushless_Motorshield_Gimbal::step() {
+void LXR_Brushless_Motorshield_Gimbal::step() 
+{
 	// update step	
 	m_current_step_U = increase_step(m_current_step_U);
 	m_current_step_V = increase_step(m_current_step_V);
@@ -140,17 +148,13 @@ void LXR_Brushless_Motorshield_Gimbal::step() {
 	phase_w.ocr2a = SINUS[m_current_step_W];
 	phase_w.phase = W;
 
-        if(m_direction == BACKWARD) {
-      	  phase_u.phase = V; 
-      	  phase_v.phase = U; 
-        }
-	
 	// create an array and sort it ascending
 	s_phase_data phases[3] = {phase_u, phase_v, phase_w};
 	sort(phases, 3);
 	
 	// update pwm data struct
-	uint8_t p = 0; for(; p<3; p++) {
+	uint8_t p = 0; for(; p<3; p++) 
+	{
 		m_pwm_data.phase_data[p].ocr2a = phases[p].ocr2a;
 		m_pwm_data.phase_data[p].phase = phases[p].phase;
 	}
@@ -159,14 +163,16 @@ void LXR_Brushless_Motorshield_Gimbal::step() {
 /**
  * @brief sets the direction for the brushless motor
  */
-void LXR_Brushless_Motorshield_Gimbal::set_direction(E_DIRECTION const dir) {
+void LXR_Brushless_Motorshield_Gimbal::set_direction(E_DIRECTION const dir) 
+{
 	m_direction = dir;
 }
 
 /**
  * @brief increases by one step
  */
-uint8_t increase_step(uint8_t const step) {
+uint8_t increase_step(uint8_t const step) 
+{
 	if(step == (NUMBER_OF_STEPS - 1)) return 0;
 	else return (step + 1);
 }
@@ -174,12 +180,17 @@ uint8_t increase_step(uint8_t const step) {
 /** 
  * @brief sorts the phases ascending by their ocr values
  */
-void sort(s_phase_data *data, uint8_t const length) {
+void sort(s_phase_data *data, uint8_t const length) 
+{
 	bool elems_swapped = false;
-	do {
+	
+	do 
+	{
 		elems_swapped = false;
-		uint8_t i = 1; for(; i<length; i++) {
-			if(data[i-1].ocr2a > data[i].ocr2a) {
+		uint8_t i = 1; for(; i<length; i++) 
+		{
+			if(data[i-1].ocr2a > data[i].ocr2a) 
+			{
 				swap(&data[i-1], &data[i]);
 				elems_swapped = true;
 			}
@@ -191,7 +202,8 @@ void sort(s_phase_data *data, uint8_t const length) {
 /** 
  * @brief swaps two structs
  */
-void swap(s_phase_data *a, s_phase_data *b) {
+void swap(s_phase_data *a, s_phase_data *b) 
+{
 	s_phase_data tmp = *a;
 	*a = *b;
 	*b = tmp;
@@ -200,10 +212,19 @@ void swap(s_phase_data *a, s_phase_data *b) {
 /** 
  * @brief interrupt service routine for timer 2 overflow vector
  */
-ISR(TIMER2_OVF_vect) {
+ISR(TIMER2_OVF_vect) 
+{
 	// turn on all phases
-	if(SINUS[m_current_step_U] > 0) SET_U_HIGH();
-	if(SINUS[m_current_step_V] > 0) SET_V_HIGH();
+	if(SINUS[m_current_step_U] > 0) 
+	{
+	  if(m_direction == FORWARD) SET_U_HIGH();
+    else SET_V_HIGH();
+	}
+	if(SINUS[m_current_step_V] > 0) 
+	{
+	  if(m_direction == FORWARD) SET_V_HIGH();
+    else SET_U_HIGH();
+	}
 	if(SINUS[m_current_step_W] > 0) SET_W_HIGH();
 	// update phase counter
 	m_pwm_data.phase_cnt = 0;
@@ -214,11 +235,23 @@ ISR(TIMER2_OVF_vect) {
 /** 
  * @brief interrupt service routine for timer 2 compare match A vector
  */
-ISR(TIMER2_COMPA_vect) {
+ISR(TIMER2_COMPA_vect) 
+{
 	// turn off corresponding output
-	switch(m_pwm_data.phase_data[m_pwm_data.phase_cnt].phase) {
-		case U: SET_U_LOW(); break;
-		case V: SET_V_LOW(); break;
+	switch(m_pwm_data.phase_data[m_pwm_data.phase_cnt].phase) 
+	{
+		case U: 
+		{
+		  if(m_direction == FORWARD) SET_U_LOW(); 
+      else SET_V_LOW();
+		}
+    break;
+		case V: 
+		{
+		  if(m_direction == FORWARD) SET_V_LOW(); 
+      else SET_U_LOW();
+		}
+		break;
 		case W: SET_W_LOW(); break;
 		default: break;
 	}

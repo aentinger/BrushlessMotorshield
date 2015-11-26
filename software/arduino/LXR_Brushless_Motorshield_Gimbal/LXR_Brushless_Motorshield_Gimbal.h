@@ -10,7 +10,8 @@
 
 typedef enum {FORWARD=0, BACKWARD=1} E_DIRECTION;
 	
-class LXR_Brushless_Motorshield_Gimbal {
+class LXR_Brushless_Motorshield_Gimbal 
+{
 public:
 	/** 
 	 * @brief initializes this library
