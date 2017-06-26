@@ -1,9 +1,15 @@
 LXRobotics P3 BrushlessMotorshield
 ==================================
 
+# License
+
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
 
+# Images
+
 ![LXRobotics P3 BrushlessMotorshield](https://www.lxrobotics.com/wp-content/uploads/mz_af_p3_side_small.jpg)
+
+# Description
 
 The Brushless Motorshield facilitates the control of a brushless motor with high performance (up to 46 A per phase). Furthermore so-called brushless gimbal motors can be controlled. For a quick and easy start, an open source Arduino library with sample programs is available.
 
