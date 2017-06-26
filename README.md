@@ -3,7 +3,7 @@ LXRobotics P3 BrushlessMotorshield
 
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-# Images
+# Image
 
 ![LXRobotics P3 BrushlessMotorshield](https://raw.githubusercontent.com/lxrobotics/BrushlessMotorshield/master/images/brushless-motorshield-side-small.jpg)
 
