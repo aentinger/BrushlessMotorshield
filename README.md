@@ -20,3 +20,9 @@ The Brushless Motorshield facilitates the control of a brushless motor with high
 * High performance: Maximum continuous output current per phase: 46 A
 * Motor drivers are protected against short circuit (to ground/supply), overheating, overvoltage and undervoltage
 * Arduino Library with example programs is available on GitHub
+
+# Videos
+
+[![VIDEO1](http://img.youtube.com/vi/2tMVa18q7es/0.jpg)](https://www.youtube.com/watch?v=2tMVa18q7es "LXRobotics Brushless Motorshield")
+
+[![VIDEO2](http://img.youtube.com/vi/S_KV7SoJLME/0.jpg)](https://www.youtube.com/watch?v=S_KV7SoJLME "LXRobotics Brushless Motorshield Gimbal Control Demo")
