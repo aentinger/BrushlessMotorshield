@@ -5,7 +5,7 @@ LXRobotics P3 BrushlessMotorshield
 
 # Images
 
-![LXRobotics P3 BrushlessMotorshield](https://www.lxrobotics.com/wp-content/uploads/mz_af_p3_side_small.jpg)
+![LXRobotics P3 BrushlessMotorshield](https://raw.githubusercontent.com/lxrobotics/BrushlessMotorshield/master/images/brushless-motorshield-side-small.jpg)
 
 # Description
 
