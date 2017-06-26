@@ -1,15 +1,18 @@
 LXRobotics P3 BrushlessMotorshield
 ==================================
 
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 ![LXRobotics P3 BrushlessMotorshield](https://www.lxrobotics.com/wp-content/uploads/mz_af_p3_side_small.jpg)
 
-## Weitere Informationen / Further Information
+The Brushless Motorshield facilitates the control of a brushless motor with high performance (up to 46 A per phase). Furthermore so-called brushless gimbal motors can be controlled. For a quick and easy start, an open source Arduino library with sample programs is available.
 
-* **DE:** https://www.lxrobotics.com/produkte/arduino-shields/brushless-motorshield
-* **EN:** https://www.lxrobotics.com/en/products/arduino-shields/brushless-motorshield
+**Features**
 
-## Lizenz / License
-Sämtliche Inhalte dieses Repositories stehen unter der CreativeCommons Lizenz CC BY-NC-SA 4.0 (Attribution-NonCommercial-ShareAlike 4.0 Unported)
-
-* **DE:** http://creativecommons.org/licenses/by-nc-sa/4.0/deed.de
-* **EN:** http://creativecommons.org/licenses/by-nc-sa/4.0/deed.en
+* Control of a brushless motor (BLDC Motor)
+* Control of a Brushless Gimbal Motor
+* Voltage supply range: 7.4 -14.8 V
+* Can be used with 2S, 3S and 4S LiPo-battery
+* High performance: Maximum continuous output current per phase: 46 A
+* Motor drivers are protected against short circuit (to ground/supply), overheating, overvoltage and undervoltage
+* Arduino Library with example programs is available on GitHub
